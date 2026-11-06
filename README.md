@@ -1,9 +1,71 @@
-[README.md](https://github.com/user-attachments/files/34230846/README.md)
-# Aether Launcher 2.3.0
+[README.md](https://github.com/user-attachments/files/34492454/README.md)
+# Aether Launcher 2.5.3
 
 Aether Launcher is a Windows Minecraft launcher focused on reliable game downloads, modern instance management, Fabric/Forge/NeoForge support, Modrinth content, and flexible Java controls.
 
-Version **2.3.0** adds a complete multiplayer center with direct server launch and Terracotta room integration.
+Version **2.5.3** connects instance creation directly to the Modrinth mod library and removes the unfinished Redstone multiplayer placeholder.
+
+## New in 2.5.3
+
+- Added a clear Official Release / Snapshot switch inside the create-instance dialog.
+- Replaced the local JAR picker with a connected Modrinth mod library.
+- The library searches only for mods compatible with the selected Minecraft version and Fabric, Forge, or NeoForge loader.
+- Multiple mods can be selected, removed, and reviewed before the instance is created.
+- After the instance is installed, Aether downloads each selected mod and its required dependencies through the existing verified mod installer.
+- Changing the Minecraft version or loader clears incompatible mod selections.
+- Removed the incomplete Redstone Link 2 option, placeholder configuration screen, simulated node controls, and disabled-room actions.
+- Multiplayer now shows a fixed Terracotta service badge instead of a native provider dropdown.
+
+## New in 2.5.2
+
+- The create-instance dialog now closes immediately after validation, while downloads and installation continue through the task dock.
+- The Minecraft version selector is grouped into official releases, snapshots, and historical builds instead of showing releases only.
+- Fabric, Forge, and NeoForge instances can include up to 100 local mod JAR files directly from the creation dialog.
+- Selected mods are copied into the new instance's `mods/` folder after installation and are reported in the completion notice.
+- Vanilla instances clearly disable the local-mod picker because they cannot load Forge-style mods.
+
+## New in 2.5.1
+
+- Newly downloaded instances now use their readable display name as the folder name instead of an opaque UUID.
+- The default instance name `Minecraft 1.21.4` therefore creates `instances/Minecraft 1.21.4`.
+- Duplicate names receive a stable numeric suffix such as ` (2)`.
+- Windows-invalid characters, reserved device names, and trailing dots or spaces are sanitized safely.
+- Cloned and imported instances also receive readable folder names.
+- Existing UUID-based instance folders remain supported and are not moved automatically.
+
+## New in 2.5.0
+
+- Added Modrinth Resource Pack Studio with compatibility filtering, search, pagination, in-app gallery previews, and installation into any Minecraft instance.
+- Added Modrinth Shader Atelier with the same compatibility-aware browsing and preview flow, writing shader ZIP files to `shaderpacks/`.
+- Resource pack and shader downloads verify the Modrinth SHA-1 hash and file size before installation.
+- Added an instance server library that reads and writes Minecraft's real gzip-compressed `servers.dat`.
+- Saved servers can be added, renamed by address, launched, pinged, or removed without leaving Aether.
+- Server icons, texture-prompt preference, and hidden state are preserved when editing an existing list.
+- Changes to a server list are blocked while that instance is running, preventing Minecraft from overwriting in-memory changes.
+- Both content centers support vanilla, Fabric, Forge, and NeoForge instances.
+
+## New in 2.4.0
+
+- Added a Java runtime scanner that lists detected major versions, installation sources, and executable paths.
+- Added a Minecraft Java server status checker with MOTD, online players, server version, server icon, and measured latency.
+- Added a start-log analyzer that sends any selected instance's latest launch log through Aether's crash diagnostics.
+- Kept the embedded seed-map explorer as the fourth toolbox tool.
+
+## New in 2.3.2
+
+- Added a game-language selector to every launch.
+- The language list is built from the selected Minecraft version's installed asset index, covering all official language packs available in that version.
+- Languages are displayed using their native names, regions, and Minecraft language codes.
+- The selected language is saved per instance and applied to `options.txt` immediately before launch.
+- Language selection can be remembered together with Java, memory, and JVM options.
+
+## Fixed in 2.3.1
+
+- Automatic Java selection now strictly matches the runtime version required by the selected Minecraft profile.
+- A globally configured Java installation is ignored for launch when it does not match the profile requirement.
+- A compatible local runtime is preferred; otherwise the launcher downloads the official matching Mojang runtime.
+- Java 24+ JVM flags are now added only when the selected executable is actually Java 24 or newer.
+- Explicitly selecting an incompatible Java now produces a clear error instead of a JVM launch failure.
 
 ## New in 2.3.0
 
@@ -11,7 +73,7 @@ Version **2.3.0** adds a complete multiplayer center with direct server launch a
 - Added direct server launch through Minecraft Quick Play.
 - Added integrated Terracotta hosting and joining, room codes, live member status, reset controls, and fallback direct-connect addresses.
 - Added secure on-demand Terracotta installation with the official SHA-256 check.
-- Added a Redstone Link 2 provider configuration screen; public room creation remains disabled until its service API is published.
+- Added the Terracotta multiplayer workflow.
 
 ## New in 2.2.2
 
@@ -107,7 +169,7 @@ Archives use path traversal checks and a 16 GB extraction limit. Instance backup
 - On first use, Aether downloads the official Terracotta Windows x64 package, verifies its published SHA-256, and starts it in hidden integration mode.
 - Hosts and guests can create rooms, join with invitation codes, reset interrupted sessions, inspect members, and copy fallback direct-connect addresses.
 - Terracotta only listens on `127.0.0.1`; room state and invitation codes stay in the local Terracotta process.
-- The Redstone Link 2 provider configuration screen is present for interface parity, but its room and relay APIs are not publicly documented, so Aether does not fabricate a public room connection for that provider.
+- Aether only exposes multiplayer integrations that can create or join real sessions.
 
 ## Download Sources
 
@@ -171,7 +233,7 @@ You can change the game directory in Settings.
 
 ## Quick Start
 
-1. Run `Aether-Launcher-2.3.0-setup.exe` and follow the installer.
+1. Run `Aether-Launcher-2.5.3-setup.exe` and follow the installer.
 2. Optionally sign in with Microsoft.
 3. Open **Download Center**, pick a Minecraft version and loader, then select loader version, Java, and memory.
 4. Select **Download and Create**.
@@ -181,8 +243,18 @@ The executable is unsigned. Windows SmartScreen may require **More info -> Run a
 
 ## Verification
 
-The following v2.2.0 flows were exercised on Windows:
+The following v2.2-v2.5 flows were exercised on Windows:
 
+- Modrinth search returned 18,000+ compatible resource packs and 700+ shaders for Minecraft 1.21.4.
+- Faithful and Complementary Shaders compatibility lookup returned valid `.zip` files for Minecraft 1.21.4.
+- Resource-pack and shader installation paths, downloaded size, and SHA-1 hash were verified in an isolated instance.
+- `servers.dat` round-trips passed for empty lists, plain servers, host-and-port addresses, and entries with icons.
+- Server add/read/delete integration was verified against an isolated Minecraft instance.
+- Readable folder creation, duplicate suffixes, path sanitization, and clone naming were verified in isolated instances.
+- Snapshot selection and the expanded create dialog were visually inspected in the packaged application.
+- The create-instance Modrinth library returned compatibility-filtered results and supported multi-select.
+- A real Sodium download from the create-instance mod library was installed into an isolated Fabric 1.21.4 instance and cleaned afterward.
+- The fixed Terracotta provider badge was visually inspected after removing the Redstone selector.
 - NeoForge 26.3.0.99 installer completion after prefetching all 30 installer dependencies.
 - NeoForge 26.3 instance creation and successful game launch with Java 25.
 - Minecraft 26.3 + NeoForge Modrinth search returning 5,000+ compatible mods.
@@ -211,17 +283,81 @@ npm run dist
 The build compiles the Windows DPAPI helper and creates the Windows installer:
 
 ```text
-release/Aether-Launcher-2.3.0/Aether-Launcher-2.3.0-setup.exe
+release/Aether-Launcher-2.5.3/Aether-Launcher-2.5.3-setup.exe
 ```
 
 ## License
 
 MIT
-# Aether Launcher 2.3.0
+
+[README.zh-CN.md](https://github.com/user-attachments/files/34492458/README.zh-CN.md)
+# Aether Launcher 2.5.3
 
 Aether Launcher 是一款面向 Windows 的 Minecraft 启动器，重点提供可靠下载、现代化实例管理、Fabric/Forge/NeoForge 支持、Modrinth 内容浏览和灵活 Java 控制。
 
-**2.3.0** 新增完整的多人游戏中心，支持直接启动服务器，并在启动器内创建和加入陶瓦联机房间。
+**2.5.3** 将创建实例流程直接连接到 Modrinth 模组库，并移除尚未完成的红石联机占位功能。
+
+## 2.5.3 新增
+
+- 创建实例弹窗增加明确的“正式版 / 快照”切换。
+- 将本地 JAR 选择器替换为直接连接 Modrinth 的模组库。
+- 模组库只搜索与当前 Minecraft 版本及 Fabric、Forge、NeoForge 加载器兼容的内容。
+- 可在创建前搜索、多选、移除并检查随实例安装的模组。
+- 实例创建完成后，通过现有的哈希校验安装器自动下载所选模组及必需前置依赖。
+- 切换 Minecraft 版本或加载器时会清除不再兼容的模组选择。
+- 删除未完成的红石联机 2 入口、占位配置页、模拟节点选项和无法使用的房间按钮。
+- 多人游戏页面改为固定显示陶瓦联机服务标识，不再使用原生联机方式下拉框。
+
+## 2.5.2 新增
+
+- 创建实例弹窗在验证通过后立即关闭，下载与安装继续显示在底部任务栏。
+- Minecraft 版本选择按正式版、快照和历史版本分组，不再只显示正式版。
+- Fabric、Forge 与 NeoForge 实例可在创建弹窗中直接选择最多 100 个本地模组 JAR。
+- 实例创建完成后，所选模组会自动复制到新实例的 `mods/` 目录，并在完成提示中显示导入数量。
+- 原版实例会明确禁用本地模组选择，因为原版客户端不能加载模组。
+
+## 2.5.1 新增
+
+- 新下载的实例直接使用可读的实例名称作为文件夹名称，不再使用难以识别的 UUID。
+- 默认名称 `Minecraft 1.21.4` 会在实例目录中创建 `Minecraft 1.21.4` 文件夹。
+- 同名实例会自动添加 ` (2)` 等数字后缀。
+- 自动处理 Windows 不允许的字符、系统保留名称以及末尾空格和句点。
+- 克隆与导入的实例同样使用可读目录名。
+- 已有的 UUID 实例目录继续兼容，不会在升级时自动移动。
+
+## 2.5.0 新增
+
+- 新增 Modrinth 资源包中心，支持按实例版本筛选、搜索、分页、画廊预览，并可安装到任意 Minecraft 实例。
+- 新增 Modrinth 光影中心，提供相同的兼容筛选与预览流程，并把光影 ZIP 安装到 `shaderpacks/`。
+- 资源包与光影下载会校验 Modrinth SHA-1 和文件大小，通过后才进入实例。
+- 新增实例服务器列表，直接读写 Minecraft 使用的 gzip 压缩 `servers.dat`。
+- 可在启动器内添加、按地址更新名称、检测状态、启动连接或删除服务器。
+- 编辑已有列表时会保留服务器图标、资源包提示偏好和隐藏状态。
+- 实例运行时禁止修改服务器列表，避免 Minecraft 退出后覆盖本次修改。
+- 两个内容中心均支持原版、Fabric、Forge 和 NeoForge 实例。
+
+## 2.4.0 新增
+
+- 新增 Java 运行环境检测，可查看本机 Java 主版本、来源和可执行文件路径。
+- 新增 Minecraft Java 服务器状态检测，可读取 MOTD、在线人数、服务端版本、服务器图标和实际延迟。
+- 新增启动日志诊断入口，可选择任意实例并分析最近一次启动日志。
+- 种子地图继续作为工具箱的第四项功能保留。
+
+## 2.3.2 新增
+
+- 启动设置中新增游戏语言选择器。
+- 语言列表直接从当前 Minecraft 版本已安装的资源索引读取，覆盖该版本提供的全部官方语言。
+- 显示语言原生名称、地区和 Minecraft 语言代码。
+- 所选语言按实例保存，并在启动前写入该实例的 `options.txt`。
+- 可和 Java、内存、JVM 参数一起保存为该实例的默认启动选项。
+
+## 2.3.1 修复
+
+- 自动匹配现在严格按照所选 Minecraft 版本要求选择 Java 大版本。
+- 全局 Java 与游戏要求不一致时会跳过它，选择本机兼容版本。
+- 没有兼容 Java 时会自动下载 Mojang 对应的官方运行时。
+- Java 24+ 专用 JVM 参数只在最终选中的 Java 确实为 24 或更新版本时添加。
+- 手动选择不兼容的 Java 时会直接显示清晰错误，不再进入 JVM 启动失败流程。
 
 ## 2.3.0 更新
 
@@ -229,7 +365,7 @@ Aether Launcher 是一款面向 Windows 的 Minecraft 启动器，重点提供�
 - 支持通过 Minecraft Quick Play 直接启动并进入服务器。
 - 集成陶瓦联机创建房间、邀请码加入、实时成员状态、会话重置和备用直连地址。
 - 首次使用自动下载陶瓦联机官方内核，并校验发布方 SHA-256。
-- 新增红石联机 2 的端口与节点配置界面；在其服务端 API 公开前不会伪造公网房间。
+- 新增陶瓦联机创建与加入房间流程。
 
 ## 2.2.2 更新
 
@@ -325,7 +461,7 @@ Aether Launcher 是一款面向 Windows 的 Minecraft 启动器，重点提供�
 - 首次使用会自动下载陶瓦联机官方 Windows x64 发布包，校验发布方 SHA-256 后以隐藏集成模式启动。
 - 支持创建房间、邀请码加入、成员列表、会话重置、停止服务以及复制备用直连地址。
 - 陶瓦联机 API 只监听 `127.0.0.1`，邀请码和房间状态保留在本机陶瓦进程中。
-- 界面保留了红石联机 2 的端口与节点配置入口，但该服务未公开房间创建和中转节点 API，因此不会伪造公网房间或上传本地世界。
+- 启动器只展示能够实际创建或加入联机的服务。
 
 ## 下载源
 
@@ -389,7 +525,7 @@ NeoForge 不是占位配置，而是完整安装流程：
 
 ## 快速开始
 
-1. 运行 `Aether-Launcher-2.3.0-setup.exe`，按安装向导完成安装。
+1. 运行 `Aether-Launcher-2.5.3-setup.exe`，按安装向导完成安装。
 2. 可选：使用 Microsoft 登录。
 3. 打开 **下载中心**，选择 Minecraft 版本、加载器、加载器版本、Java 与内存。
 4. 点击 **下载并创建**。
@@ -399,8 +535,18 @@ NeoForge 不是占位配置，而是完整安装流程：
 
 ## 验证情况
 
-以下 v2.2.0 流程已在 Windows 上实际验证：
+以下 v2.2-v2.5 流程已在 Windows 上实际验证：
 
+- Minecraft 1.21.4 的 Modrinth 搜索返回 18,000+ 个兼容资源包和 700+ 个光影。
+- Faithful 与 Complementary Shaders 均成功识别出兼容 1.21.4 的 ZIP 文件。
+- 已在隔离实例中验证资源包与光影的安装目录、下载大小和 SHA-1 哈希。
+- `servers.dat` 已通过空列表、普通服务器、域名加端口和带图标条目四类往返测试。
+- 已在隔离 Minecraft 实例中验证服务器添加、读取与删除。
+- 已在隔离实例中验证可读目录创建、同名编号、非法字符处理和克隆目录命名。
+- 已在打包应用中检查快照选择和扩展后的创建弹窗布局。
+- 已验证创建实例中的 Modrinth 模组库能返回兼容结果并支持多选。
+- 已从创建实例模组库实际下载 Sodium 到隔离的 Fabric 1.21.4 实例，并在验证后清理。
+- 已检查移除红石选择器后的固定陶瓦联机服务标识。
 - 预取全部 30 个依赖后，NeoForge 26.3.0.99 官方安装器成功完成。
 - NeoForge 26.3 实例成功创建，并使用 Java 25 进入游戏。
 - Minecraft 26.3 + NeoForge 的 Modrinth 模组搜索返回 5,000+ 个兼容结果。
@@ -429,12 +575,9 @@ npm run dist
 构建过程会编译 Windows DPAPI 辅助程序，并生成 Windows 安装包：
 
 ```text
-release/Aether-Launcher-2.3.0/Aether-Launcher-2.3.0-setup.exe
+release/Aether-Launcher-2.5.3/Aether-Launcher-2.5.3-setup.exe
 ```
 
 ## 许可证
 
 MIT
-
-[README.zh-CN.md](https://github.com/user-attachments/files/34230847/README.zh-CN.md)
-
