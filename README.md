@@ -1,3 +1,17 @@
+# We end this regular development.
+# See you next time.(Maybe on next weekend)
+
+
+
+
+
+
+
+
+
+
+
+
 [README.zh-CN.md](https://github.com/user-attachments/files/34517950/README.zh-CN.md)[README.md](https://github.com/user-attachments/files/34517945/README.md)
 # Aether Launcher 2.6.0
 
