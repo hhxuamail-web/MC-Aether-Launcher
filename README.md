@@ -1,26 +1,53 @@
-# We end this regular development.
+[PCL-FEATURE-OVERLAP.zh-CN.md](https://github.com/user-attachments/files/34876288/PCL-FEATURE-OVERLAP.zh-CN.md)[README.zh-CN.md](https://github.com/user-attachments/files/34876272/README.zh-CN.md)# We end this regular development.
 # See you next time.(Maybe on next weekend)
 
+[README.md](https://github.com/user-attachments/files/34876268/README.md)
 
-
-
-
-
-
-
-
-
-
-
-[README.zh-CN.md](https://github.com/user-attachments/files/34517950/README.zh-CN.md)[README.md](https://github.com/user-attachments/files/34517945/README.md)
-# Aether Launcher 2.6.0
+# Aether Launcher 2.7.0
 
 Aether Launcher is a Windows Minecraft launcher focused on reliable game downloads, modern instance management, Fabric/Forge/NeoForge support, Modrinth content, and flexible Java controls.
 
-Version **2.6.0** adds concurrent multi-version downloading and fixes snapshot/legacy version stalls at the early metadata stages.
+Version **2.7.0** combines a complete 923-version download catalog with a PCL-inspired Mod Center, exact compatible-version selection, and pre-install dependency planning.
 
-## New in 2.6.0
+## New in 2.7.0
 
+- Completed the PCL-overlap audit and replaced every content-download surface with the same independent catalog/detail/version/install architecture.
+- Upgraded the modpack market with Minecraft-version, loader, category, and sorting filters plus a dedicated full-page project detail view.
+- Modpack details now include gallery media, project description, all compatible pack versions, exact `.mrpack` selection, target runtime, and a one-click new-instance installation panel.
+- Unified resource packs, shaders, and data packs into compatible content centers with project details and exact file-version selection.
+- Added data pack support with explicit target-world selection and installation into that world's `datapacks/` directory.
+- Removed the duplicate Modrinth browser from the instance mod manager; installed mods now use a dedicated management view and new downloads hand off to the Mod Center.
+- Added enabled, disabled, and update-available filters to installed mod management.
+- Added per-instance Java compatibility status and an automatic Mojang runtime preparation action.
+- Added a documented PCL overlap map covering download, instance, launch, account, and settings surfaces.
+- Rebuilt download progress display around a PCL-style download overview with aggregate running-task progress, total speed, downloaded bytes, ETA, per-task current file, and per-task remaining time.
+- Made the main-process task table the only source of task truth; renderer task snapshots are revisioned, and stale running events can no longer overwrite a completed or failed task.
+- Sanitized every task snapshot before IPC, excluding internal callbacks and underscore-prefixed fields so Electron structured cloning always succeeds.
+- Added a visible “Download management” action to the compact task dock and hydration of active tasks after renderer reloads.
+- Modpack installation now reuses one parent task from instance creation through pack-file installation instead of creating a second nested task that could remain stuck near 10%.
+- Download size is now always visible in the task dock, overview, compact task card, and detailed task view; unknown totals display `0 B / calculating` instead of a dash.
+- Instances are committed to the library only after all required game files and optional pack content are complete.
+- New instance downloads force the client, libraries, natives, logging configs, asset index, and asset objects to come from the external mirror, even when cached copies exist.
+- Partial instance directories are marked `.aether-installing` and excluded from all instance queries until the `.aether-ready` commit marker is written.
+- Rebuilt the Mod Library as a dedicated PCL-inspired Mod Center with target-instance compatibility, category filters, sorting, and pagination.
+- Added Modrinth search indexes for relevance, downloads, follows, newest releases, and recent updates.
+- Added a full project-detail workspace with gallery media, project description, download/follow counts, tags, and external Modrinth access.
+- Detail pages list every version compatible with the target Minecraft version and loader, including file name, size, channel, and publish date.
+- Users can select an exact compatible version instead of being limited to the latest file.
+- Added a pre-install dependency plan that resolves required projects, displays their icons, names, versions, and sizes, and totals the complete download.
+- Exact-version installation now preserves the selected root version while resolving each required dependency for the same target instance.
+- Mod installation tasks now report the active JAR, source URL, dependency stage, byte progress, and speed.
+- Added searchable standard categories including optimization, adventure, world generation, technology, magic, decoration, equipment, food, game mechanics, transportation, storage, social, utility, and libraries.
+- Rebuilt the Minecraft download center as a version catalog inspired by the familiar public PCL workflow, without copying PCL implementation code.
+- The catalog now includes 103 releases, 759 snapshots, 26 old Beta builds, and 35 old Alpha builds.
+- Added Release, Snapshot, Beta, Alpha, and All filters, full-text version search, installed-instance badges, and a version inspector.
+- The inspector shows the required Java major, estimated total download, client/library/asset breakdown, release date, existing instances, and current mirror status.
+- Added one-click loader choices for Vanilla, Fabric, Forge, and NeoForge directly from the version inspector.
+- Added live source measurements and automatic fallback when a mirror metadata endpoint is reset or unavailable.
+- Historical versions without a modern `javaVersion` field now infer their required runtime from the version era instead of being rejected as incomplete.
+- Download tasks now report the exact current file, active source, network bytes, cache bytes, speed, elapsed time, and ETA.
+- Concurrent tasks no longer share a global task reference; metadata and asset-index failures are attributed to the correct instance.
+- Resumed `.part` files count their existing bytes toward progress, while incomplete or checksum-mismatched temporary files are discarded safely.
 - Rebuilt the instance library as a resource workspace with aggregate statistics, search, type filtering, sorting, compact per-instance actions, and a row-based instance list.
 - Added library statistics for total instances, running instances, modded instances, and accumulated play time.
 - Rebuilt the game download flow as a three-step wizard: version/loader, runtime, and final review.
@@ -32,7 +59,7 @@ Version **2.6.0** adds concurrent multi-version downloading and fixes snapshot/l
 - Minecraft clients, libraries, assets, logging configs, and loader metadata are downloaded directly from Mojang or the configured mirror into the target instance.
 - The version downloader no longer depends on selecting a local archive or local game-version files.
 - Removed the always-visible create-instance sidebar from the version catalog.
-- The separate Download List window provides a live queue for all running and completed tasks.
+- The separate Download List provides a live, filterable queue for all running and completed tasks.
 - The queue lists every concurrent install task with stage, progress, size, speed, and failure state.
 - Creation buttons re-arm immediately after a task is submitted, allowing multiple Minecraft versions to download at the same time.
 - Finished tasks remain visible until the user selects “Clear finished”.
@@ -64,6 +91,11 @@ Version **2.6.0** adds concurrent multi-version downloading and fixes snapshot/l
 - The task center now includes every background task type instead of filtering to game downloads only.
 - Successful task cards remain visible at 100% for five seconds, then close automatically. If another task is still running, the card switches to that active task instead of closing.
 - Removed the large AETHER LABS promotional card and vertical generation text from the sidebar; the navigation now leads directly to the compact account control.
+- Standardized all launcher and embedded seed-map UI fonts on Microsoft YaHei, except English display labels, which use Times New Roman. The minimum interface font size is now 11.5 px, with larger body copy, controls, headings, and metadata tuned for desktop readability.
+- Instance cards now use a dedicated pixel-art Minecraft landscape image instead of a CSS-generated glyph; the shader section description was rewritten in plain language and no longer exposes the internal `shaderpacks` directory name.
+- Resource-pack and shader headings now use parallel plain-language copy. Their cards, icons, badges, and hover states inherit the active accent theme instead of retaining fixed blue/purple colors.
+- Removed the two technical status pills from the resource-pack and shader headers, and added matching introduction cards to the modpack market and mod library. All four content sections now follow every Aether theme accent.
+- Fixed the instance-detail Java button by separating the Java status element from the clickable button ID. The Java selector now opens reliably, and the entire interface was checked for duplicate element IDs.
 - JSON metadata requests now have a hard timeout, source status messages, and fallback progression even if the underlying network request never resolves.
 - Corrupt or empty cached asset indexes are discarded and fetched again atomically.
 - Removed the unfinished Instance Version Transition UI, IPC handlers, state, and documentation.
@@ -334,7 +366,7 @@ You can change the game directory in Settings.
 
 ## Quick Start
 
-1. Run `Aether-Launcher-2.6.0-setup.exe` and follow the installer.
+1. Run `Aether-Launcher-2.7.0-setup.exe` and follow the installer.
 2. Optionally sign in with Microsoft.
 3. Open **Download Center**, pick a Minecraft version and loader, then select loader version, Java, and memory.
 4. Select **Download and Create**.
@@ -371,7 +403,23 @@ The following v2.2-v2.5 flows were exercised on Windows:
 - The Download List was verified to force a successful task to 100% even if its stored progress value is still an early value.
 - A deliberately corrupt cached file was detected by SHA-1 and replaced with a valid downloaded copy.
 - Minecraft 1.5.2, 1.7.6, 1.8.1-pre3, and 1.12.2 launch classpaths were verified to contain their matching LWJGL core and utility JARs.
-- All 922 versions in the official Java version manifest passed client/library/asset-index and launch-argument preflight checks.
+- All 923 versions in the current official Java version manifest passed client/library/Java/download-plan preflight checks.
+- The full preflight completed in 196 seconds with zero failures across 103 releases, 759 snapshots, 26 Beta builds, and 35 Alpha builds.
+- Minecraft Alpha `a1.2.6` and Beta `b1.7.3` were downloaded concurrently into readable version-named folders, completed at 100% independently, and produced Java 8 launch commands.
+- The Mod Center returned 1,133 optimization projects for Fabric 1.21.4, with Sodium listed first when sorted by downloads.
+- Sodium returned nine compatible versions for Fabric 1.21.4, and an exact version could be selected before installation.
+- Iris Shaders resolved to a two-file plan containing Iris and its required Sodium dependency.
+- A real isolated installation of the selected Iris version downloaded both JARs, reported each current file and dependency stage, completed at 100%, and was cleaned up after verification.
+- Forge 1.20.1 adventure filtering returned compatible modpacks with selectable versions.
+- Faithful 64x, Complementary Shaders, and VeinMiner were installed through their respective centers into isolated targets; the data pack used a temporary world and all test files were removed.
+- Per-instance Java preparation resolved Java 21 for both test instances.
+- A stale-progress regression delivered `running: 10%` after `success: 100%`; the stored and displayed state remained `success: 100%`.
+- Main-process task revisions remained monotonic through creation, progress, completion, and a rejected post-completion update.
+- A parent-task regression confirmed that a complete modpack installation produces exactly one task; game preparation maps into 2%–20%, then continues in the same task.
+- A pre-cached `a1.2.6` setup was used to create another fresh instance: it downloaded 56,294,581 network bytes with 0 cached bytes, remained absent from the library during download, and appeared only after completion.
+- The task UI was visually verified with both running tasks that have known totals and tasks whose totals are still being calculated; byte numbers remained continuously visible.
+- A real renderer-driven `a1.2.6` download progressed to 42% with `19.2 MB / 47.4 MB` and `720.2 KB/s`, continued to 100%, downloaded 49,704,608 network bytes with zero cache bytes, and entered the instance library only after completion.
+- The task snapshot contained no internal callback fields; structured-clone regression tests passed at every emitted revision.
 - Actual mirror-backed downloads and launches were verified across 28 era-spanning versions from `rd-132211` and Classic through Alpha, Beta, 1.7.10, 1.13.2, 1.20.5, 1.21.5, 26.3, and `26.4-snapshot-7`.
 - The existing Minecraft 1.5.2 instance that previously crashed with a null language reader was relaunched after the casing fix and verified to reach its title screen.
 - A real 1.5.2 repair task was executed and verified to return a task ID whose final shared state was `success / 100% / 完成`, matching the completion notification.
@@ -407,7 +455,7 @@ npm run dist
 The build compiles the Windows DPAPI helper and creates the Windows installer:
 
 ```text
-release/Aether-Launcher-2.6.0/Aether-Launcher-2.6.0-setup.exe
+release/Aether-Launcher-2.7.0/Aether-Launcher-2.7.0-setup.exe
 ```
 
 ## Third-Party Brand Assets
@@ -418,14 +466,55 @@ The Terracotta logo is sourced from the official [burningtnt/Terracotta](https:/
 
 MIT
 
-[Uploading README.zh-CN.md…# Aether Launcher 2.6.0
+[Upload# Aether Launcher 2.7.0
 
 Aether Launcher 是一款面向 Windows 的 Minecraft 启动器，重点提供可靠下载、现代化实例管理、Fabric/Forge/NeoForge 支持、Modrinth 内容浏览和灵活 Java 控制。
 
-**2.6.0** 新增多版本并行下载队列，并修复快照与旧版本在早期元数据阶段卡住的问题。
+**2.7.0** 将完整 923 版本下载目录与 PCL 式模组中心合并，支持目标实例兼容筛选、指定版本安装和安装前依赖计划。
 
-## 2.6.0 新增
+版本目录覆盖当前 Mojang 清单中的 103 个正式版、759 个快照、26 个旧 Beta 和 35 个旧 Alpha。选择版本后，可在安装前查看所需 Java、预计体积、客户端/运行库/资源构成、已有实例和镜像状态。
 
+公开 PCL 源码仓库已用于下载流程研究，但其自定义分发与合理使用条款并不等同于宽松的 MIT/GPL 许可，因此 Aether 未复制 PCL 实现代码。当前下载中心是基于 Mojang、BMCLAPI、Fabric、Forge、NeoForge 与 Modrinth 公开接口的独立实现。
+
+## 2.7.0 新增
+
+- 完成 PCL 重合功能审计，并把所有内容下载界面统一为同一套“目录、详情、具体版本、安装”架构。
+- 整合包市场新增 Minecraft 版本、加载器、类别与排序筛选，并升级为独立完整项目详情页。
+- 整合包详情包含展示图、项目介绍、全部兼容版本、具体 `.mrpack` 选择、目标运行环境与一键创建实例安装面板。
+- 资源包、光影与数据包统一为兼容内容中心，支持项目详情和具体文件版本选择。
+- 新增数据包中心，明确选择目标世界，并安装到该世界的 `datapacks/` 目录。
+- 删除实例模组管理中重复的 Modrinth 搜索页；已安装模组使用独立管理界面，下载新模组统一跳转模组中心。
+- 已安装模组新增全部、已启用、已停用和可更新筛选。
+- Java 工具新增按实例显示兼容状态，以及自动准备 Mojang 官方运行时的操作。
+- 新增 PCL 重合功能映射文档，覆盖下载、实例、启动、账户和设置区域。
+- 下载进度改为 PCL 式下载总览：显示所有运行任务的聚合进度、总速度、已下载字节、预计剩余，以及每个任务自己的当前文件和剩余时间。
+- 主进程任务表改为任务状态的唯一来源；渲染器使用带 revision 的任务快照，旧的“运行中”事件不能再覆盖已完成或失败状态。
+- 所有任务快照在通过 IPC 发送前都会清洗，剔除内部回调与下划线字段，保证 Electron 结构化克隆始终成功。
+- 顶部下载条新增“下载管理”入口，并支持渲染器重载后从主进程恢复当前任务。
+- 整合包安装现在从实例创建到模组与覆盖文件安装始终复用同一个父任务，不再额外产生一个可能卡在 10% 的内层任务。
+- 下载大小现在会持续显示在顶部任务条、下载总览、紧凑任务卡和实时详情中；总大小未知时显示 `0 B / 计算中`，不再显示破折号。
+- 实例只有在全部游戏文件与可选整合包内容下载并提交完成后才会进入实例库。
+- 新实例的客户端、运行库、原生组件、日志配置、资源索引和资源对象都会强制从外部镜像下载，即使本地已有相同文件。
+- 尚未完成的实例目录会写入 `.aether-installing` 标记并从所有实例查询中隐藏，直到 `.aether-ready` 完成标记写入。
+- 模组库重做为独立的 PCL 式模组中心，支持目标实例兼容筛选、类别、排序和分页。
+- 新增相关度、下载量、关注数、最近发布、最近更新五种 Modrinth 搜索排序。
+- 新增完整项目详情页，包含展示图、项目介绍、下载量、关注数、标签和 Modrinth 外部入口。
+- 详情页会列出目标 Minecraft 版本与加载器可用的全部兼容版本，并显示文件名、大小、渠道和发布时间。
+- 可以选择并安装指定兼容版本，不再只能安装最新版。
+- 新增安装前依赖计划，真实解析必需前置，并显示每个项目的图标、名称、版本、大小与总下载体积。
+- 指定版本安装会保留主模组版本，同时为当前目标实例解析每个必需前置的兼容版本。
+- 模组安装任务会显示当前 JAR、来源地址、前置安装阶段、字节进度与速度。
+- 新增性能优化、冒险、世界生成、科技、魔法、装饰、装备、食物、机制、运输、仓储、社交、实用工具和支持库等标准类别。
+- Minecraft 下载中心重做为完整版本目录，参考公开 PCL 的浏览流程，但不复制其实现代码。
+- 版本目录包含 103 个正式版、759 个快照、26 个旧 Beta 和 35 个旧 Alpha。
+- 新增正式版、快照、Beta、Alpha、全部筛选、版本搜索、已安装标记和右侧版本详情。
+- 版本详情显示所需 Java、预计下载大小、客户端/运行库/资源构成、发布时间、已有实例和当前镜像状态。
+- 版本详情可直接选择原版、Fabric、Forge 或 NeoForge 进入安装向导。
+- 新增下载节点测速；镜像元数据连接重置时会自动回退官方源。
+- 缺少现代 `javaVersion` 字段的历史版本会按发布时间与版本时代推断 Java，不再被误判为不完整版本。
+- 下载任务现在会显示精确的当前文件、实际来源、网络字节、缓存字节、速度、已用时间和预计剩余。
+- 并行任务不再共用全局任务引用，元数据与资源索引错误会归属到正确实例。
+- 断点续传的 `.part` 已下载字节会计入进度；不完整或校验失败的临时文件会被安全丢弃。
 - 实例库重做为实例资源工作区，包含汇总统计、搜索、类型筛选、排序、紧凑单实例操作和行式实例列表。
 - 新增全部实例、运行中实例、加载器实例和累计游玩时长统计。
 - 游戏版本下载重做为三步向导：版本与加载器、运行环境、最终确认。
@@ -437,7 +526,7 @@ Aether Launcher 是一款面向 Windows 的 Minecraft 启动器，重点提供�
 - Minecraft 客户端、运行库、资源、日志配置和加载器元数据会直接从 Mojang 或所选镜像下载到目标实例中。
 - 游戏版本下载不再依赖选择本地压缩包或本地游戏版本文件。
 - 删除版本目录右侧常驻的创建实例表单。
-- 独立下载列表窗口会实时显示全部运行中和已结束的任务。
+- 独立下载列表会实时显示并筛选全部运行中和已结束的任务。
 - 队列会同时列出多个安装任务，并显示阶段、进度、大小、速度和失败状态。
 - 提交下载后创建按钮会立即恢复可用，可继续选择并启动其他 Minecraft 版本。
 - 已结束任务会保留在列表中，直到用户点击“清除已结束”。
@@ -469,6 +558,11 @@ Aether Launcher 是一款面向 Windows 的 Minecraft 启动器，重点提供�
 - 任务中心现在显示所有后台任务，不再只筛选游戏下载任务。
 - 后台任务成功达到 100% 后会继续显示 5 秒，然后自动关闭；如果还有别的任务正在运行，则切换到仍在执行的任务，不会误关进度窗口。
 - 已删除侧边栏中较大的 AETHER LABS 宣传卡片和竖排版本装饰，导航下方直接显示紧凑的账户入口。
+- 启动器和内嵌种子地图统一使用微软雅黑，英文装饰标题使用 Times New Roman；界面最小字号提升到 11.5 px，并重新调整正文、按钮、标题和辅助信息的字号层级。
+- 实例卡改用独立的像素风 Minecraft 景观图片，不再使用 CSS 拼接图标或文字缩写；光影版块说明改为更自然的用户语言，不再直接暴露内部 `shaderpacks` 目录名。
+- 资源包与光影标题改为统一的对仗措辞；两个版块的卡片、图标、标签和悬停状态全部跟随当前主题色，不再固定使用蓝色或紫色。
+- 删除资源包和光影标题右侧的技术状态标签，并为整合包市场和模组库补充同风格的介绍卡片；四个内容版块现在全部跟随 16 套主题的强调色。
+- 修复实例详情中的“切换 Java”按钮：原先 Java 状态文字与按钮使用了重复 ID，事件被绑定到不可点击的状态文字上；现在两者使用独立 ID，并已扫描确认界面不存在其他重复元素 ID。
 - JSON 元数据请求增加硬超时、来源状态提示和回退进度，即使底层请求一直不返回也不会无限卡住。
 - 损坏或空的资源索引缓存会被自动丢弃，并通过临时文件安全重写。
 - 已删除未完成的“实例版本变迁”入口、界面、IPC、状态和相关说明。
@@ -739,7 +833,7 @@ NeoForge 不是占位配置，而是完整安装流程：
 
 ## 快速开始
 
-1. 运行 `Aether-Launcher-2.6.0-setup.exe`，按安装向导完成安装。
+1. 运行 `Aether-Launcher-2.7.0-setup.exe`，按安装向导完成安装。
 2. 可选：使用 Microsoft 登录。
 3. 打开 **下载中心**，选择 Minecraft 版本、加载器、加载器版本、Java 与内存。
 4. 点击 **下载并创建**。
@@ -776,7 +870,23 @@ NeoForge 不是占位配置，而是完整安装流程：
 - 已验证即使任务存储中的进度仍为早期数值，只要状态成功，下载列表也会强制显示 100%。
 - 已验证损坏的本地缓存会通过 SHA-1 检测并被正确文件替换。
 - 已验证 Minecraft 1.5.2、1.7.6、1.8.1-pre3 与 1.12.2 的启动 classpath 均包含对应版本的 LWJGL 核心库和工具库。
-- 官方 Java 版本清单中的全部 922 个版本均已通过客户端、运行库、资源索引和启动参数预检。
+- 当前官方 Java 版本清单中的全部 923 个版本均已通过客户端、运行库、Java 与下载计划预检。
+- 全量预检耗时 196 秒，103 个正式版、759 个快照、26 个 Beta 和 35 个 Alpha 全部通过，失败 0。
+- 已同时下载 Alpha `a1.2.6` 与 Beta `b1.7.3`，各自使用版本名称文件夹、独立完成到 100%，并成功生成 Java 8 启动命令。
+- 模组中心为 Fabric 1.21.4 返回 1,133 个性能优化项目，按下载量排序时 Sodium 位于首位。
+- Sodium 在 Fabric 1.21.4 下返回 9 个兼容版本，可在安装前选择指定版本。
+- Iris Shaders 的安装计划正确解析为 2 个文件，并包含必需前置 Sodium。
+- 已在隔离实例中实际安装指定 Iris 版本，两个 JAR 均成功下载，任务逐文件显示主模组与前置阶段并到达 100%，验证后已清理测试文件。
+- Forge 1.20.1 冒险整合包筛选能返回兼容项目和可选择的整合包版本。
+- Faithful 64x、Complementary Shaders 与 VeinMiner 已分别通过对应内容中心安装；数据包使用临时世界，测试文件均已清理。
+- 按实例准备 Java 能为两个测试实例正确解析 Java 21。
+- 已执行旧进度回灌测试：在 `success:100%` 后注入 `running:10%`，最终状态仍保持 `success:100%`。
+- 主进程任务 revision 在创建、进度更新、完成以及完成后拒绝旧更新时保持单调递增。
+- 父任务回归测试确认一次完整整合包安装只产生一个任务；游戏准备阶段映射到总进度 2%–20%，之后继续使用同一任务。
+- 使用已经完整缓存的 `a1.2.6` 再创建新实例，实际产生 56,294,581 字节网络下载、缓存命中 0；下载中实例数量不变，完成后才出现在实例库。
+- 已分别检查总大小已知和仍在计算中的任务，字节数始终显示并随下载进度更新。
+- 已从真实界面下载 `a1.2.6`：中途达到 42%，显示 `19.2 MB / 47.4 MB`、`720.2 KB/s`，随后完成到 100%；网络下载 49,704,608 字节、缓存命中 0，完成后才进入实例库。
+- 每个发出的任务 revision 均通过结构化克隆测试，快照中没有内部回调字段。
 - 已使用镜像优先链路实际下载并启动 28 个跨时代版本，覆盖 `rd-132211`、Classic、Alpha、Beta、1.7.10、1.13.2、1.20.5、1.21.5、26.3 与 `26.4-snapshot-7`，全部进入游戏。
 - 已重新启动此前实际崩溃的 Minecraft 1.5.2 实例，确认 `options.txt` 自动写为 `lang:en_US` 并成功进入游戏主菜单。
 - 已实际执行一次 1.5.2 文件修复，确认返回的任务 ID 最终共享状态为 `success / 100% / 完成`，与顶部完成提示一致。
@@ -812,7 +922,7 @@ npm run dist
 构建过程会编译 Windows DPAPI 辅助程序，并生成 Windows 安装包：
 
 ```text
-release/Aether-Launcher-2.6.0/Aether-Launcher-2.6.0-setup.exe
+release/Aether-Launcher-2.7.0/Aether-Launcher-2.7.0-setup.exe
 ```
 
 ## 第三方品牌资源
@@ -822,5 +932,14 @@ release/Aether-Launcher-2.6.0/Aether-Launcher-2.6.0-setup.exe
 ## 许可证
 
 MIT
-]()
+ing README.zh-CN.md…]()
+
+# references 参考文献
+[Uploading PCL-FEATURE-OVERLAP.z[DOWNLOAD-CENTER.md](https://github.com/user-attachments/files/34876289/DOWNLOAD-CENTER.md)[PCL-FEATURE-OVERLAP.md](https://github.com/user-attachments/files/34876296/PCL-FEATURE-OVERLAP.md)
+[PCL-DOWNLOAD-AUDIT.zh-CN.md](https://github.com/user-attachments/files/34876295/PCL-DOWNLOAD-AUDIT.zh-CN.md)
+[PCL-DOWNLOAD-AUDIT.md](https://github.com/user-attachments/files/34876294/PCL-DOWNLOAD-AUDIT.md)
+[MOD-CENTER.zh-CN.md](https://github.com/user-attachments/files/34876293/MOD-CENTER.zh-CN.md)
+[MOD-CENTER.md](https://github.com/user-attachments/files/34876291/MOD-CENTER.md)
+[DOWNLOAD-CENTER.zh-CN.md](https://github.com/user-attachments/files/34876290/DOWNLOAD-CENTER.zh-CN.md)
+h-CN.md…]()
 
