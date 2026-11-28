@@ -1,10 +1,8 @@
-# Temporary Ending
-[Uploading README.md…]()
 # Aether Launcher 2.7.0
 
 Aether Launcher is a Windows Minecraft launcher focused on reliable game downloads, modern instance management, Fabric/Forge/NeoForge support, Modrinth content, and flexible Java controls.
 
-Version **2.7.0** combines a complete 925-version download catalog with a PCL-inspired Mod Center, exact compatible-version selection, and pre-install dependency planning.
+Version **2.7.0** combines a complete 927-version download catalog with a PCL-inspired Mod Center, exact compatible-version selection, and pre-install dependency planning.
 
 ## New in 2.7.0
 
@@ -18,6 +16,19 @@ Version **2.7.0** combines a complete 925-version download catalog with a PCL-in
 - Added per-instance Java compatibility status and an automatic Mojang runtime preparation action.
 - Added a documented PCL overlap map covering download, instance, launch, account, and settings surfaces.
 - Rebuilt download progress around a PCL-style overview with aggregate running-task progress, total speed, downloaded bytes, and each task's current file. Remaining time is intentionally not displayed.
+- The floating download window's Collapse action now hides the entire window instead of leaving a progress-only bar. Background work continues and remains available from Download List; a new task shows the window again.
+- Updating now offers an opt-in “Delete all old-version user data” installer checkbox. After a second confirmation it removes instances, saves, mods, resource packs, shaders, account data, settings, and download caches. A custom game directory is left untouched.
+- Added `Aether-Launcher-2.7.0-full-uninstall.exe`, a dedicated full-uninstall tool that removes the program directory, instances, saves, mods, content, account data, settings, logs, download/update caches, shortcuts, and uninstall registry entries. A custom game directory is detected and listed as a separate target.
+- Added **Safe Mode Launch** to the toolbox: temporarily removes all mods and restores them automatically when the game exits.
+- Added **World Time Machine**: backs up every world in an instance and restores individual historical snapshots with a pre-restore safety backup.
+- Added **One-Click Server Forge**: downloads the official server for a selected Minecraft version and prepares Java, EULA, server properties, and a launch script.
+- One-Click Server Forge now selects online or offline authentication and can switch existing servers, fixing the “Invalid session” error when an offline profile joins an online-mode server.
+- Added resilient system-proxy fallback: when the configured proxy reports `ERR_PROXY_CONNECTION_FAILED`, tunnel failure, or an unsupported proxy authentication path, the launcher switches to direct networking and remembers that choice for the current period. Version metadata, mirrors, images, and Microsoft sign-in use the same transport.
+- Rebuilt game installation around one verified inventory covering the client, libraries, natives, asset index, asset objects, and logging configuration.
+- Removed the old standalone “running libraries completed” path. A file only counts as cached after exact-size and SHA-1 verification.
+- Added a final full-inventory audit before instance commit and revalidation of expanded legacy virtual assets.
+- Both BMCLAPI library routes, `/maven/` and `/libraries/`, are attempted before official Maven fallback.
+- A second instance of the same version now reuses every verified client, library, and asset instead of unconditionally downloading the client again.
 - A normal “New Instance” flow always defaults to the latest release from the manifest; snapshots are preselected only when installation starts from a specific snapshot entry.
 - Changing the selected release, snapshot, or historical version in the wizard updates an automatically generated instance name; user-entered custom names are preserved.
 - Download management supports pause, resume, and cancel. Pausing closes the active connection and keeps the `.part` checkpoint; resuming continues from it; cancelling stops the task and removes the unfinished instance directory.
@@ -28,9 +39,9 @@ Version **2.7.0** combines a complete 925-version download catalog with a PCL-in
 - Modpack installation now reuses one parent task from instance creation through pack-file installation instead of creating a second nested task that could remain stuck near 10%.
 - Download size is now always visible in the task dock, overview, compact task card, and detailed task view; unknown totals display `0 B / calculating` instead of a dash.
 - Instances are committed to the library only after all required game files and optional pack content are complete.
-- Every new instance fetches its version client from the external mirror. Existing shared libraries, assets, natives, logging configs, and Java runtimes are reused when present; missing files are downloaded from the mirror, and existing instances are never copied as a shortcut.
+- A new instance downloads only missing or invalid clients, shared libraries, assets, natives, and logging configs. Files that pass exact-size and SHA-1 verification are reused, as are Java runtimes; existing instances are never copied as a shortcut.
 - Partial instance directories are marked `.aether-installing` and excluded from all instance queries until the `.aether-ready` commit marker is written.
-- Replaced the previous downloader with an independent HMCL/PCL-inspired engine; the legacy pipeline no longer handles ordinary file transfers.
+- Replaced the previous downloader with an independent HMCL/PCL-inspired engine; the legacy pipeline no longer handles ordinary file transfers. The former split library-completion path is now replaced by unified inventory verification, download, and final auditing.
 - Every file uses one streaming connection and concurrency is applied across files. Clients, assets, and Maven dependencies are speed-tested by category instead of being hard-coded to one mirror.
 - Client files prefer the faster measured Mojang endpoint; assets choose between BMCLAPI and the official resource host; Maven and loader dependencies prefer BMCLAPI or a domestic Maven fallback.
 - Timeouts, low speed, connection resets, HTTP 429, 404, and SHA-1 mismatches switch to the next candidate and resume through the `.part` file.
@@ -50,7 +61,7 @@ Version **2.7.0** combines a complete 925-version download catalog with a PCL-in
 - Mod installation tasks now report the active JAR, source URL, dependency stage, byte progress, and speed.
 - Added searchable standard categories including optimization, adventure, world generation, technology, magic, decoration, equipment, food, game mechanics, transportation, storage, social, utility, and libraries.
 - Rebuilt the Minecraft download center as a version catalog inspired by the familiar public PCL workflow, without copying PCL implementation code.
-- The catalog now includes 103 releases, 761 snapshots, 26 old Beta builds, and 35 old Alpha builds.
+- The catalog now includes 103 releases, 763 snapshots, 26 old Beta builds, and 35 old Alpha builds.
 - Added Release, Snapshot, Beta, Alpha, and All filters, full-text version search, installed-instance badges, and a version inspector.
 - The inspector shows the required Java major, estimated total download, client/library/asset breakdown, release date, existing instances, and current mirror status.
 - Added one-click loader choices for Vanilla, Fabric, Forge, and NeoForge directly from the version inspector.
@@ -414,8 +425,8 @@ The following v2.2-v2.5 flows were exercised on Windows:
 - The Download List was verified to force a successful task to 100% even if its stored progress value is still an early value.
 - A deliberately corrupt cached file was detected by SHA-1 and replaced with a valid downloaded copy.
 - Minecraft 1.5.2, 1.7.6, 1.8.1-pre3, and 1.12.2 launch classpaths were verified to contain their matching LWJGL core and utility JARs.
-- All 925 versions in the current official Java version manifest passed client/library/Java/download-plan preflight checks.
-- The new engine completed the full preflight in 24 seconds with zero failures across 103 releases, 761 snapshots, 26 Beta builds, and 35 Alpha builds.
+- All 927 versions in the current official Java version manifest passed client/library/Java/download-plan preflight checks.
+- The rebuilt engine completed the full preflight in 18 seconds with zero failures across 103 releases, 763 snapshots, 26 Beta builds, and 35 Alpha builds.
 - Minecraft Alpha `a1.2.6` and Beta `b1.7.3` were downloaded concurrently into readable version-named folders, completed at 100% independently, and produced Java 8 launch commands.
 - The Mod Center returned 1,133 optimization projects for Fabric 1.21.4, with Sodium listed first when sorted by downloads.
 - Sodium returned nine compatible versions for Fabric 1.21.4, and an exact version could be selected before installation.
@@ -427,7 +438,9 @@ The following v2.2-v2.5 flows were exercised on Windows:
 - A stale-progress regression delivered `running: 10%` after `success: 100%`; the stored and displayed state remained `success: 100%`.
 - Main-process task revisions remained monotonic through creation, progress, completion, and a rejected post-completion update.
 - A parent-task regression confirmed that a complete modpack installation produces exactly one task; game preparation maps into 2%–20%, then continues in the same task.
-- A new `a1.2.6` instance with shared caches present downloaded only the 1,105,909-byte version client and reused 47,833,553 cached bytes. Complete creation took 3.49 seconds, and the instance remained hidden until completion.
+- A real empty-directory `a1.2.6` installation completed all 478 files and 49,704,608 bytes at 100%, then passed its full final audit and entered the instance library.
+- A second `a1.2.6` instance reused all 47,833,553 verified shared bytes with zero network transfer, and remained hidden until task completion.
+- Same-size/corrupt client content and an incorrectly sized library cache were both detected and downloaded again; both BMCLAPI `/maven` and `/libraries` library routes passed.
 - The task UI was visually verified with both running tasks that have known totals and tasks whose totals are still being calculated; byte numbers remained continuously visible.
 - Downloading instances remain hidden until completion, and network bytes, cached bytes, and planned totals are reported separately without counting local cache reads as network traffic.
 - The task snapshot contained no internal callback fields; structured-clone regression tests passed at every emitted revision.
